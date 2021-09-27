@@ -8,16 +8,20 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = otaTimerCallback_harness
 
+DEFINES += -DOTA_CBMC_FLAG
+
 INCLUDES += -I$(SRCDIR)/source/include/
-INCLUDES += -I$(SRCDIR)/source/
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
+INCLUDES += -I$(SRCDIR)/test/cbmc/include
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
-REMOVE_FUNCTION_BODIES = "OTA_SignalEvent"
 NONDET_STATIC += "--nondet-static"
+
+REMOVE_FUNCTION_BODY += "OTA_SignalEvent"
+
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
 # restrict the number of EXPENSIVE CBMC jobs running at once. See the

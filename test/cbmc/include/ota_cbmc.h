@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
+ * AWS IoT Over-the-air Update v3.1.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -21,37 +21,32 @@
  */
 
 /**
- * @file otaTimerCallback_harness.c
- * @brief Implements the proof harness for otaTimerCallback function.
+ * @file ota_cbmc.h
+ * @brief Contains variables for CBMC proofs of OTA library.
  */
-/*  Ota Agent includes for OTA library. */
+
+#ifndef OTA_CBMC_H
+#define OTA_CBMC_H
+
 #include "ota.h"
-#include "ota_cbmc.h"
 
-void __CPROVER_file_local_ota_c_otaTimerCallback(OtaTimerId_t otaTimerId);
-
-/* Stub to simulate the behavior of Malloc in FreeRTOS. */
-bool OTA_SignalEvent( const OtaEventMsg_t* const pEventMsg )
+OtaAgentContext_t otaAgent =
 {
-    bool status;
-    printf("Hello");
-    return status;
-}
+OtaAgentStateStopped, /* state */
+{ 0 },                /* pThingName */
+{ 0 },                /* fileContext */
+0,                    /* fileIndex */
+0,                    /* serverFileID */
+{ 0 },                /* pActiveJobName */
+NULL,                 /* pClientTokenFromJob */
+0,                    /* timestampFromJob */
+OtaImageStateUnknown, /* imageState */
+1,                    /* numOfBlocksToReceive */
+{ 0 },                /* statistics */
+0,                    /* requestMomentum */
+NULL,                 /* pOtaInterface */
+NULL,                 /* OtaAppCallback */
+1                     /* unsubscribe flag */
+};
 
-OtaPalStatus_t reset ( OtaFileContext_t fileCtx){
-    OtaPalStatus_t status;
-    return status;
-}
-
-void otaTimerCallback_harness()
-{
-    OtaTimerId_t otaTimerId;
-    OtaInterfaces_t otaInterface; 
-
-    otaInterface.pal.reset =reset;
-    otaAgent.pOtaInterface = &otaInterface;
-
-    __CPROVER_assume(otaTimerId >= 0 && otaTimerId < 2);
-
-    __CPROVER_file_local_ota_c_otaTimerCallback( otaTimerId );
-}
+#endif
