@@ -8,7 +8,7 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = otaTimerCallback_harness
 
-DEFINES += -DOTA_CBMC_FLAG
+#DEFINES += -DOTA_CBMC_FLAG
 
 INCLUDES += -I$(SRCDIR)/source/include/
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/

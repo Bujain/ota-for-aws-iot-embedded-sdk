@@ -43,14 +43,31 @@ OtaPalStatus_t reset ( OtaFileContext_t fileCtx){
     return status;
 }
 
+void callback(OtaJobEvent_t eEvent, const void *pData)
+{
+
+}
+
+OtaOsStatus_t init( OtaEventContext_t * pEventCtx )
+{
+    OtaOsStatus_t status;
+    return status;
+}
+
 void otaTimerCallback_harness()
 {
     OtaTimerId_t otaTimerId;
     OtaInterfaces_t otaInterface; 
 
-    otaInterface.pal.reset =reset;
-    otaAgent.pOtaInterface = &otaInterface;
+    OtaAppBuffer_t pOtaBuffer;
+    const uint8_t * pThingName = "temp";
+    OtaAppCallback_t OtaAppCallback = callback;
 
+    otaInterface.pal.reset = reset;
+    otaInterface.os.event.init = init;
+
+    OTA_Init(&pOtaBuffer,&otaInterface,pThingName,OtaAppCallback);  
+      
     __CPROVER_assume(otaTimerId >= 0 && otaTimerId < 2);
 
     __CPROVER_file_local_ota_c_otaTimerCallback( otaTimerId );
