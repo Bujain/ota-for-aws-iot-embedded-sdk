@@ -25,15 +25,41 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
+#include "ota_cbmc.h"
 
-bool OTA_SignalEvent(const OtaEventMsg_t *const pEventMsg)
+OtaAgentContext_t otaAgent = 
+    {
+        OtaAgentStateStopped, /* state */
+        { 0 },                /* pThingName */
+        { 0 },                /* fileContext */
+        0,                    /* fileIndex */
+        0,                    /* serverFileID */
+        { 0 },                /* pActiveJobName */
+        NULL,                 /* pClientTokenFromJob */
+        0,                    /* timestampFromJob */
+        OtaImageStateUnknown, /* imageState */
+        1,                    /* numOfBlocksToReceive */
+        { 0 },                /* statistics */
+        0,                    /* requestMomentum */
+        NULL,                 /* pOtaInterface */
+        NULL,                 /* OtaAppCallback */
+        1                     /* unsubscribe flag */
+    };
+
+OtaOsStatus_t Timerstop(OtaTimerId_t otaTimerId)
 {
-    bool status;
+    OtaOsStatus_t status;
 
-    return status;
+    __CPROVER_assume( (status >= OtaOsSuccess) && (status <= OtaOsTimerDeleteFailed));
 }
 
 void OTA_Suspend_harness()
-{
+{   
+    OtaInterfaces_t otaInterface; 
+    otaInterface.os.timer.stop = Timerstop;
+
+    otaAgent.pOtaInterface = &otaInterface;
+
+    __CPROVER_assume((otaAgent.state >= OtaAgentStateNoTransition ) && (otaAgent.state <= OtaAgentStateAll));
     OTA_Suspend();
 }
